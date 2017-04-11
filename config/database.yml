@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres
+  password: postgres
+  host: db
+
+development:
+  <<: *default
+  database: onenote_development
+
+test:
+  <<: *default
+  database: onenote_test
+
+production:
+  <<: *default
+  database: onenote_production
+  username: onenote
+  password: <%= ENV['ONENOTE_DATABASE_PASSWORD'] %>
