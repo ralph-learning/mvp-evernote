@@ -10,10 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170410203834) do
+ActiveRecord::Schema.define(version: 20170411194410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "notes", force: :cascade do |t|
+    t.string   "title"
+    t.text     "body"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_notes_on_user_id", using: :btree
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string   "title"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_tags_on_user_id", using: :btree
+  end
+
+  create_table "tags_notes", force: :cascade do |t|
+    t.integer  "tag_id"
+    t.integer  "note_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["note_id"], name: "index_tags_notes_on_note_id", using: :btree
+    t.index ["tag_id"], name: "index_tags_notes_on_tag_id", using: :btree
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -32,4 +58,19 @@ ActiveRecord::Schema.define(version: 20170410203834) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
+  create_table "users_notes", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "note_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["note_id"], name: "index_users_notes_on_note_id", using: :btree
+    t.index ["user_id"], name: "index_users_notes_on_user_id", using: :btree
+  end
+
+  add_foreign_key "notes", "users"
+  add_foreign_key "tags", "users"
+  add_foreign_key "tags_notes", "notes"
+  add_foreign_key "tags_notes", "tags"
+  add_foreign_key "users_notes", "notes"
+  add_foreign_key "users_notes", "users"
 end
